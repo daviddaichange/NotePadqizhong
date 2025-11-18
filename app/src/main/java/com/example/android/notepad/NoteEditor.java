@@ -19,6 +19,7 @@ package com.example.android.notepad;
 import static com.example.android.notepad.R.*;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -29,6 +30,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -59,11 +61,12 @@ public class NoteEditor extends Activity {
      * Creates a projection that returns the note ID and the note contents.
      */
     private static final String[] PROJECTION =
-        new String[] {
-            NotePad.Notes._ID,
-            NotePad.Notes.COLUMN_NAME_TITLE,
-            NotePad.Notes.COLUMN_NAME_NOTE
-    };
+            new String[] {
+                    NotePad.Notes._ID,
+                    NotePad.Notes.COLUMN_NAME_TITLE,
+                    NotePad.Notes.COLUMN_NAME_NOTE,
+                    NotePad.Notes.COLUMN_NAME_BACK_COLOR
+            };
 
     // A label for the saved state of the activity
     private static final String ORIGINAL_CONTENT = "origContent";
@@ -189,7 +192,7 @@ public class NoteEditor extends Activity {
             // set the result to be returned.
             setResult(RESULT_OK, (new Intent()).setAction(mUri.toString()));
 
-        // If the action was other than EDIT or INSERT:
+            // If the action was other than EDIT or INSERT:
         } else {
 
             // Logs an error that the action was not understood, finishes the Activity, and
@@ -208,11 +211,11 @@ public class NoteEditor extends Activity {
          * android.content.AsyncQueryHandler or android.os.AsyncTask.
          */
         mCursor = managedQuery(
-            mUri,         // The URI that gets multiple notes from the provider.
-            PROJECTION,   // A projection that returns the note ID and note content for each note.
-            null,         // No "where" clause selection criteria.
-            null,         // No "where" clause selection values.
-            null          // Use the default sort order (modification date, descending)
+                mUri,         // The URI that gets multiple notes from the provider.
+                PROJECTION,   // A projection that returns the note ID and note content for each note.
+                null,         // No "where" clause selection criteria.
+                null,         // No "where" clause selection values.
+                null          // Use the default sort order (modification date, descending)
         );
 
         // For a paste, initializes the data from clipboard.
@@ -226,6 +229,12 @@ public class NoteEditor extends Activity {
 
         // Sets the layout for this Activity. See res/layout/note_editor.xml
         setContentView(R.layout.note_editor);
+
+        // Add the small triangle back button (Up button)
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
 
         // Gets a handle to the EditText in the the layout.
         mText = (EditText) findViewById(R.id.note);
@@ -274,7 +283,7 @@ public class NoteEditor extends Activity {
                 Resources res = getResources();
                 String text = String.format(res.getString(R.string.title_edit), title);
                 setTitle(text);
-            // Sets the title to "create" for inserts
+                // Sets the title to "create" for inserts
             } else if (mState == STATE_INSERT) {
                 setTitle(getText(R.string.title_create));
             }
@@ -297,10 +306,16 @@ public class NoteEditor extends Activity {
                 mOriginalContent = note;
             }
 
-        /*
-         * Something is wrong. The Cursor should always contain data. Report an error in the
-         * note.
-         */
+            int colBackIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COLOR);
+            int color = mCursor.getInt(colBackIndex);
+            if (color != 0) {
+                mText.setBackgroundColor(color);
+            }
+
+            /*
+             * Something is wrong. The Cursor should always contain data. Report an error in the
+             * note.
+             */
         } else {
             setTitle(getText(R.string.error_title));
             mText.setText(getText(R.string.error_message));
@@ -368,11 +383,13 @@ public class NoteEditor extends Activity {
                  */
             } else if (mState == STATE_EDIT) {
                 // Creates a map to contain the new values for the columns
-                updateNote(text, null);
+                if (isNoteModified()) {
+                    updateNote(text, null);
+                }
             } else if (mState == STATE_INSERT) {
                 updateNote(text, text);
                 mState = STATE_EDIT;
-          }
+            }
         }
     }
 
@@ -392,7 +409,7 @@ public class NoteEditor extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.editor_options_menu, menu);
 
-        // Only add extra menu items for a saved note 
+        // Only add extra menu items for a saved note
         if (mState == STATE_EDIT) {
             // Append to the
             // menu items for any other activities that can do stuff with it
@@ -444,8 +461,35 @@ public class NoteEditor extends Activity {
             finish();
         } else if (id == R.id.menu_revert) {
             cancelNote();
+        } else if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+        else if (id == R.id.menu_color_white) {
+            updateColor(getResources().getColor(R.color.note_color_white));
+            return true;
+        } else if (id == R.id.menu_color_yellow) {
+            updateColor(getResources().getColor(R.color.note_color_yellow));
+            return true;
+        } else if (id == R.id.menu_color_blue) {
+            updateColor(getResources().getColor(R.color.note_color_blue));
+            return true;
+        } else if (id == R.id.menu_color_green) {
+            updateColor(getResources().getColor(R.color.note_color_green));
+            return true;
+        } else if (id == R.id.menu_color_red) {
+            updateColor(getResources().getColor(R.color.note_color_red));
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateColor(int color) {
+        mText.setBackgroundColor(color);
+        ContentValues values = new ContentValues();
+        values.put(NotePad.Notes.COLUMN_NAME_BACK_COLOR, color);
+        getContentResolver().update(mUri, values, null, null);
+        updateWidget();
     }
 
 //BEGIN_INCLUDE(paste)
@@ -531,14 +575,14 @@ public class NoteEditor extends Activity {
 
             // If no title was provided as an argument, create one from the note text.
             if (title == null) {
-  
+
                 // Get the note's length
                 int length = text.length();
 
                 // Sets the title by getting a substring of the text that is 31 characters long
                 // or the number of characters in the note plus one, whichever is smaller.
                 title = text.substring(0, Math.min(30, length));
-  
+
                 // If the resulting length is more than 30 characters, chops off any
                 // trailing spaces
                 if (length > 30) {
@@ -574,9 +618,9 @@ public class NoteEditor extends Activity {
                 values,  // The map of column names and new values to apply to them.
                 null,    // No selection criteria are used, so no where columns are necessary.
                 null     // No where columns are used, so no where arguments are necessary.
-            );
+        );
 
-
+        updateWidget();
     }
 
     /**
@@ -610,6 +654,27 @@ public class NoteEditor extends Activity {
             mCursor = null;
             getContentResolver().delete(mUri, null, null);
             mText.setText("");
+            updateWidget();
         }
     }
+
+    private void updateWidget() {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        ComponentName thisWidget = new ComponentName(this, NoteWidgetProvider.class);
+        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        if (allWidgetIds != null && allWidgetIds.length > 0) {
+            Intent intent = new Intent(this, NoteWidgetProvider.class);
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, allWidgetIds);
+            sendBroadcast(intent);
+        }
+    }
+
+    private boolean isNoteModified() {
+        int colNoteIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE);
+        String savedNote = mCursor.getString(colNoteIndex);
+        String currentNote = mText.getText().toString();
+        return !savedNote.equals(currentNote);
+    }
+
 }

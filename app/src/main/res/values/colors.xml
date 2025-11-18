@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 新增：笔记背景色资源（和代码中引用的名称完全一致） -->
+    <color name="note_color_white">#FFFFFF</color>    <!-- 白色 -->
+    <color name="note_color_yellow">#FFFFCC</color>   <!-- 浅黄色（护眼） -->
+    <color name="note_color_blue">#E6F3FF</color>    <!-- 浅蓝色 -->
+    <color name="note_color_green">#E6FFE6</color>    <!-- 浅绿色 -->
+    <color name="note_color_red">#FFE6E6</color>      <!-- 浅红色 -->
+
+    <!-- 其他已有的颜色资源可保留，新增上面5行即可 -->
+</resources>

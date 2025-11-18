@@ -88,20 +88,20 @@ public final class NotePad {
          * append a numeric note id to this Uri to retrieve a note
          */
         public static final Uri CONTENT_ID_URI_BASE
-            = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID);
+                = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID);
 
         /**
          * The content URI match pattern for a single note, specified by its ID. Use this to match
          * incoming URIs or to construct an Intent.
          */
         public static final Uri CONTENT_ID_URI_PATTERN
-            = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID + "/#");
+                = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID + "/#");
 
         /**
          * The content Uri pattern for a notes listing for live folders
          */
         public static final Uri LIVE_FOLDER_URI
-            = Uri.parse(SCHEME + AUTHORITY + PATH_LIVE_FOLDER);
+                = Uri.parse(SCHEME + AUTHORITY + PATH_LIVE_FOLDER);
 
         /*
          * MIME type definitions
@@ -150,5 +150,11 @@ public final class NotePad {
          * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
          */
         public static final String COLUMN_NAME_MODIFICATION_DATE = "modified";
+
+        /**
+         * Column name for the back color
+         * <P>Type: INTEGER</P>
+         */
+        public static final String COLUMN_NAME_BACK_COLOR = "color";
     }
 }

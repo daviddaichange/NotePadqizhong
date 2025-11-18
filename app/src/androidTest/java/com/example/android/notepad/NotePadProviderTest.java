@@ -46,7 +46,7 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
     // A URI that the provider does not offer, for testing error handling.
     private static final Uri INVALID_URI =
-        Uri.withAppendedPath(NotePad.Notes.CONTENT_URI, "invalid");
+            Uri.withAppendedPath(NotePad.Notes.CONTENT_URI, "invalid");
 
     // Contains a reference to the mocked content resolver for the provider under test.
     private MockContentResolver mMockResolver;
@@ -56,16 +56,16 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
     // Contains the test data, as an array of NoteInfo instances.
     private final NoteInfo[] TEST_NOTES = {
-        new NoteInfo("Note0", "This is note 0"),
-        new NoteInfo("Note1", "This is note 1"),
-        new NoteInfo("Note2", "This is note 2"),
-        new NoteInfo("Note3", "This is note 3"),
-        new NoteInfo("Note4", "This is note 4"),
-        new NoteInfo("Note5", "This is note 5"),
-        new NoteInfo("Note6", "This is note 6"),
-        new NoteInfo("Note7", "This is note 7"),
-        new NoteInfo("Note8", "This is note 8"),
-        new NoteInfo("Note9", "This is note 9") };
+            new NoteInfo("Note0", "This is note 0"),
+            new NoteInfo("Note1", "This is note 1"),
+            new NoteInfo("Note2", "This is note 2"),
+            new NoteInfo("Note3", "This is note 3"),
+            new NoteInfo("Note4", "This is note 4"),
+            new NoteInfo("Note5", "This is note 5"),
+            new NoteInfo("Note6", "This is note 6"),
+            new NoteInfo("Note7", "This is note 7"),
+            new NoteInfo("Note8", "This is note 8"),
+            new NoteInfo("Note9", "This is note 9") };
 
     // Number of milliseconds in one day (milliseconds * seconds * minutes * hours)
     private static final long ONE_DAY_MILLIS = 1000 * 60 * 60 * 24;
@@ -75,7 +75,7 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
     // Creates a calendar object equal to January 1, 2010 at 12 midnight
     private static final GregorianCalendar TEST_CALENDAR =
-        new GregorianCalendar(2010, Calendar.JANUARY, 1, 0, 0, 0);
+            new GregorianCalendar(2010, Calendar.JANUARY, 1, 0, 0, 0);
 
     // Stores a timestamp value, set to an arbitrary starting point
     private final static long START_DATE = TEST_CALENDAR.getTimeInMillis();
@@ -148,9 +148,9 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
             // Adds a record to the database.
             mDb.insertOrThrow(
-                NotePad.Notes.TABLE_NAME,             // the table name for the insert
-                NotePad.Notes.COLUMN_NAME_TITLE,      // column set to null if empty values map
-                TEST_NOTES[index].getContentValues()  // the values map to insert
+                    NotePad.Notes.TABLE_NAME,             // the table name for the insert
+                    NotePad.Notes.COLUMN_NAME_TITLE,      // column set to null if empty values map
+                    TEST_NOTES[index].getContentValues()  // the values map to insert
             );
         }
     }
@@ -252,7 +252,7 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
         // but the NotePadProvider does not use it.
         testAssetDescriptor = mMockResolver.openTypedAssetFileDescriptor(
                 testNoteIdUri,         // the URI for a single note. The pipe points to this
-                                       // note's data
+                // note's data
                 MIME_TYPE_TEXT,        // a MIME type of "text/plain"
                 null                   // the "opts" argument
         );
@@ -353,7 +353,7 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
         noteIdUri = ContentUris.withAppendedId(
                 NotePad.Notes.CONTENT_ID_URI_BASE,  // The base pattern for a note ID URI
                 1                                   // Sets the URI to point to record ID 1 in the
-                                                    // provider
+                // provider
         );
 
         // Gets a Cursor for the note.
@@ -422,9 +422,9 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
     public void testQueriesOnNotesUri() {
         // Defines a projection of column names to return for a query
         final String[] TEST_PROJECTION = {
-            NotePad.Notes.COLUMN_NAME_TITLE,
-            NotePad.Notes.COLUMN_NAME_NOTE,
-            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
+                NotePad.Notes.COLUMN_NAME_TITLE,
+                NotePad.Notes.COLUMN_NAME_NOTE,
+                NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
         };
 
         // Defines a selection column for the query. When the selection columns are passed
@@ -433,40 +433,40 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
         // Defines the selection columns for a query.
         final String SELECTION_COLUMNS =
-            TITLE_SELECTION + " OR " + TITLE_SELECTION + " OR " + TITLE_SELECTION;
+                TITLE_SELECTION + " OR " + TITLE_SELECTION + " OR " + TITLE_SELECTION;
 
-         // Defines the arguments for the selection columns.
+        // Defines the arguments for the selection columns.
         final String[] SELECTION_ARGS = { "Note0", "Note1", "Note5" };
 
-         // Defines a query sort order
+        // Defines a query sort order
         final String SORT_ORDER = NotePad.Notes.COLUMN_NAME_TITLE + " ASC";
 
         // Query subtest 1.
         // If there are no records in the table, the returned cursor from a query should be empty.
         Cursor cursor = mMockResolver.query(
-            NotePad.Notes.CONTENT_URI,  // the URI for the main data table
-            null,                       // no projection, get all columns
-            null,                       // no selection criteria, get all records
-            null,                       // no selection arguments
-            null                        // use default sort order
+                NotePad.Notes.CONTENT_URI,  // the URI for the main data table
+                null,                       // no projection, get all columns
+                null,                       // no selection criteria, get all records
+                null,                       // no selection arguments
+                null                        // use default sort order
         );
 
-         // Asserts that the returned cursor contains no records
+        // Asserts that the returned cursor contains no records
         assertEquals(0, cursor.getCount());
 
-         // Query subtest 2.
-         // If the table contains records, the returned cursor from a query should contain records.
+        // Query subtest 2.
+        // If the table contains records, the returned cursor from a query should contain records.
 
         // Inserts the test data into the provider's underlying data source
         insertData();
 
         // Gets all the columns for all the rows in the table
         cursor = mMockResolver.query(
-            NotePad.Notes.CONTENT_URI,  // the URI for the main data table
-            null,                       // no projection, get all columns
-            null,                       // no selection criteria, get all records
-            null,                       // no selection arguments
-            null                        // use default sort order
+                NotePad.Notes.CONTENT_URI,  // the URI for the main data table
+                null,                       // no projection, get all columns
+                null,                       // no selection criteria, get all records
+                null,                       // no selection arguments
+                null                        // use default sort order
         );
 
         // Asserts that the returned cursor contains the same number of rows as the size of the
@@ -477,11 +477,11 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
         // A query that uses a projection should return a cursor with the same number of columns
         // as the projection, with the same names, in the same order.
         Cursor projectionCursor = mMockResolver.query(
-              NotePad.Notes.CONTENT_URI,  // the URI for the main data table
-              TEST_PROJECTION,            // get the title, note, and mod date columns
-              null,                       // no selection columns, get all the records
-              null,                       // no selection criteria
-              null                        // use default the sort order
+                NotePad.Notes.CONTENT_URI,  // the URI for the main data table
+                TEST_PROJECTION,            // get the title, note, and mod date columns
+                null,                       // no selection columns, get all the records
+                null,                       // no selection criteria
+                null                        // use default the sort order
         );
 
         // Asserts that the number of columns in the cursor is the same as in the projection
@@ -497,11 +497,11 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
         // A query that uses selection criteria should return only those rows that match the
         // criteria. Use a projection so that it's easy to get the data in a particular column.
         projectionCursor = mMockResolver.query(
-            NotePad.Notes.CONTENT_URI, // the URI for the main data table
-            TEST_PROJECTION,           // get the title, note, and mod date columns
-            SELECTION_COLUMNS,         // select on the title column
-            SELECTION_ARGS,            // select titles "Note0", "Note1", or "Note5"
-            SORT_ORDER                 // sort ascending on the title column
+                NotePad.Notes.CONTENT_URI, // the URI for the main data table
+                TEST_PROJECTION,           // get the title, note, and mod date columns
+                SELECTION_COLUMNS,         // select on the title column
+                SELECTION_ARGS,            // select titles "Note0", "Note1", or "Note5"
+                SORT_ORDER                 // sort ascending on the title column
         );
 
         // Asserts that the cursor has the same number of rows as the number of selection arguments
@@ -529,87 +529,87 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
      * record ID. The provider should only return 0 or 1 record.
      */
     public void testQueriesOnNoteIdUri() {
-      // Defines the selection column for a query. The "?" is replaced by entries in the
-      // selection argument array
-      final String SELECTION_COLUMNS = NotePad.Notes.COLUMN_NAME_TITLE + " = " + "?";
+        // Defines the selection column for a query. The "?" is replaced by entries in the
+        // selection argument array
+        final String SELECTION_COLUMNS = NotePad.Notes.COLUMN_NAME_TITLE + " = " + "?";
 
-      // Defines the argument for the selection column.
-      final String[] SELECTION_ARGS = { "Note1" };
+        // Defines the argument for the selection column.
+        final String[] SELECTION_ARGS = { "Note1" };
 
-      // A sort order for the query.
-      final String SORT_ORDER = NotePad.Notes.COLUMN_NAME_TITLE + " ASC";
+        // A sort order for the query.
+        final String SORT_ORDER = NotePad.Notes.COLUMN_NAME_TITLE + " ASC";
 
-      // Creates a projection includes the note id column, so that note id can be retrieved.
-      final String[] NOTE_ID_PROJECTION = {
-           NotePad.Notes._ID,                 // The Notes class extends BaseColumns,
-                                              // which includes _ID as the column name for the
-                                              // record's id in the data model
-           NotePad.Notes.COLUMN_NAME_TITLE};  // The note's title
+        // Creates a projection includes the note id column, so that note id can be retrieved.
+        final String[] NOTE_ID_PROJECTION = {
+                NotePad.Notes._ID,                 // The Notes class extends BaseColumns,
+                // which includes _ID as the column name for the
+                // record's id in the data model
+                NotePad.Notes.COLUMN_NAME_TITLE};  // The note's title
 
-      // Query subtest 1.
-      // Tests that a query against an empty table returns null.
+        // Query subtest 1.
+        // Tests that a query against an empty table returns null.
 
-      // Constructs a URI that matches the provider's notes id URI pattern, using an arbitrary
-      // value of 1 as the note ID.
-      Uri noteIdUri = ContentUris.withAppendedId(NotePad.Notes.CONTENT_ID_URI_BASE, 1);
+        // Constructs a URI that matches the provider's notes id URI pattern, using an arbitrary
+        // value of 1 as the note ID.
+        Uri noteIdUri = ContentUris.withAppendedId(NotePad.Notes.CONTENT_ID_URI_BASE, 1);
 
-      // Queries the table with the notes ID URI. This should return an empty cursor.
-      Cursor cursor = mMockResolver.query(
-          noteIdUri, // URI pointing to a single record
-          null,      // no projection, get all the columns for each record
-          null,      // no selection criteria, get all the records in the table
-          null,      // no need for selection arguments
-          null       // default sort, by ascending title
-      );
+        // Queries the table with the notes ID URI. This should return an empty cursor.
+        Cursor cursor = mMockResolver.query(
+                noteIdUri, // URI pointing to a single record
+                null,      // no projection, get all the columns for each record
+                null,      // no selection criteria, get all the records in the table
+                null,      // no need for selection arguments
+                null       // default sort, by ascending title
+        );
 
-      // Asserts that the cursor is null.
-      assertEquals(0,cursor.getCount());
+        // Asserts that the cursor is null.
+        assertEquals(0,cursor.getCount());
 
-      // Query subtest 2.
-      // Tests that a query against a table containing records returns a single record whose ID
-      // is the one requested in the URI provided.
+        // Query subtest 2.
+        // Tests that a query against a table containing records returns a single record whose ID
+        // is the one requested in the URI provided.
 
-      // Inserts the test data into the provider's underlying data source.
-      insertData();
+        // Inserts the test data into the provider's underlying data source.
+        insertData();
 
-      // Queries the table using the URI for the full table.
-      cursor = mMockResolver.query(
-          NotePad.Notes.CONTENT_URI, // the base URI for the table
-          NOTE_ID_PROJECTION,        // returns the ID and title columns of rows
-          SELECTION_COLUMNS,         // select based on the title column
-          SELECTION_ARGS,            // select title of "Note1"
-          SORT_ORDER                 // sort order returned is by title, ascending
-      );
+        // Queries the table using the URI for the full table.
+        cursor = mMockResolver.query(
+                NotePad.Notes.CONTENT_URI, // the base URI for the table
+                NOTE_ID_PROJECTION,        // returns the ID and title columns of rows
+                SELECTION_COLUMNS,         // select based on the title column
+                SELECTION_ARGS,            // select title of "Note1"
+                SORT_ORDER                 // sort order returned is by title, ascending
+        );
 
-      // Asserts that the cursor contains only one row.
-      assertEquals(1, cursor.getCount());
+        // Asserts that the cursor contains only one row.
+        assertEquals(1, cursor.getCount());
 
-      // Moves to the cursor's first row, and asserts that this did not fail.
-      assertTrue(cursor.moveToFirst());
+        // Moves to the cursor's first row, and asserts that this did not fail.
+        assertTrue(cursor.moveToFirst());
 
-      // Saves the record's note ID.
-      int inputNoteId = cursor.getInt(0);
+        // Saves the record's note ID.
+        int inputNoteId = cursor.getInt(0);
 
-      // Builds a URI based on the provider's content ID URI base and the saved note ID.
-      noteIdUri = ContentUris.withAppendedId(NotePad.Notes.CONTENT_ID_URI_BASE, inputNoteId);
+        // Builds a URI based on the provider's content ID URI base and the saved note ID.
+        noteIdUri = ContentUris.withAppendedId(NotePad.Notes.CONTENT_ID_URI_BASE, inputNoteId);
 
-      // Queries the table using the content ID URI, which returns a single record with the
-      // specified note ID, matching the selection criteria provided.
-      cursor = mMockResolver.query(noteIdUri, // the URI for a single note
-          NOTE_ID_PROJECTION,                 // same projection, get ID and title columns
-          SELECTION_COLUMNS,                  // same selection, based on title column
-          SELECTION_ARGS,                     // same selection arguments, title = "Note1"
-          SORT_ORDER                          // same sort order returned, by title, ascending
-      );
+        // Queries the table using the content ID URI, which returns a single record with the
+        // specified note ID, matching the selection criteria provided.
+        cursor = mMockResolver.query(noteIdUri, // the URI for a single note
+                NOTE_ID_PROJECTION,                 // same projection, get ID and title columns
+                SELECTION_COLUMNS,                  // same selection, based on title column
+                SELECTION_ARGS,                     // same selection arguments, title = "Note1"
+                SORT_ORDER                          // same sort order returned, by title, ascending
+        );
 
-      // Asserts that the cursor contains only one row.
-      assertEquals(1, cursor.getCount());
+        // Asserts that the cursor contains only one row.
+        assertEquals(1, cursor.getCount());
 
-      // Moves to the cursor's first row, and asserts that this did not fail.
-      assertTrue(cursor.moveToFirst());
+        // Moves to the cursor's first row, and asserts that this did not fail.
+        assertTrue(cursor.moveToFirst());
 
-      // Asserts that the note ID passed to the provider is the same as the note ID returned.
-      assertEquals(inputNoteId, cursor.getInt(0));
+        // Asserts that the note ID passed to the provider is the same as the note ID returned.
+        assertEquals(inputNoteId, cursor.getInt(0));
     }
 
     /*
@@ -618,8 +618,8 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
     public void testInserts() {
         // Creates a new note instance with ID of 30.
         NoteInfo note = new NoteInfo(
-            "Note30", // the note's title
-            "Test inserting a note" // the note's content
+                "Note30", // the note's title
+                "Test inserting a note" // the note's content
         );
 
         // Sets the note's creation and modification times
@@ -630,8 +630,8 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
         // Inserts a row using the new note instance.
         // No assertion will be done. The insert() method either works or throws an Exception
         Uri rowUri = mMockResolver.insert(
-            NotePad.Notes.CONTENT_URI,  // the main table URI
-            note.getContentValues()     // the map of values to insert as a new record
+                NotePad.Notes.CONTENT_URI,  // the main table URI
+                note.getContentValues()     // the map of values to insert as a new record
         );
 
         // Parses the returned URI to get the note ID of the new note. The ID is used in subtest 2.
@@ -640,11 +640,11 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
         // Does a full query on the table. Since insertData() hasn't yet been called, the
         // table should only contain the record just inserted.
         Cursor cursor = mMockResolver.query(
-            NotePad.Notes.CONTENT_URI, // the main table URI
-            null,                      // no projection, return all the columns
-            null,                      // no selection criteria, return all the rows in the model
-            null,                      // no selection arguments
-            null                       // default sort order
+                NotePad.Notes.CONTENT_URI, // the main table URI
+                null,                      // no projection, return all the columns
+                null,                      // no selection criteria, return all the rows in the model
+                null,                      // no selection arguments
+                null                       // default sort order
         );
 
         // Asserts that there should be only 1 record.
@@ -681,7 +681,7 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
             rowUri = mMockResolver.insert(NotePad.Notes.CONTENT_URI, values);
             fail("Expected insert failure for existing record but insert succeeded.");
         } catch (Exception e) {
-          // succeeded, so do nothing.
+            // succeeded, so do nothing.
         }
     }
 
@@ -700,9 +700,9 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
         // Tries to delete rows matching the selection criteria from the data model.
         int rowsDeleted = mMockResolver.delete(
-            NotePad.Notes.CONTENT_URI, // the base URI of the table
-            SELECTION_COLUMNS,         // select based on the title column
-            SELECTION_ARGS             // select title = "Note0"
+                NotePad.Notes.CONTENT_URI, // the base URI of the table
+                SELECTION_COLUMNS,         // select based on the title column
+                SELECTION_ARGS             // select title = "Note0"
         );
 
         // Assert that the deletion did not work. The number of deleted rows should be zero.
@@ -716,9 +716,9 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
         // Uses the same parameters to try to delete the row with title "Note0"
         rowsDeleted = mMockResolver.delete(
-            NotePad.Notes.CONTENT_URI, // the base URI of the table
-            SELECTION_COLUMNS,         // same selection column, "title"
-            SELECTION_ARGS             // same selection arguments, title = "Note0"
+                NotePad.Notes.CONTENT_URI, // the base URI of the table
+                SELECTION_COLUMNS,         // same selection column, "title"
+                SELECTION_ARGS             // same selection arguments, title = "Note0"
         );
 
         // The number of deleted rows should be 1.
@@ -729,11 +729,11 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
         // Queries the table with the same selection column and argument used to delete the row.
         Cursor cursor = mMockResolver.query(
-            NotePad.Notes.CONTENT_URI, // the base URI of the table
-            null,                      // no projection, return all columns
-            SELECTION_COLUMNS,         // select based on the title column
-            SELECTION_ARGS,            // select title = "Note0"
-            null                       // use the default sort order
+                NotePad.Notes.CONTENT_URI, // the base URI of the table
+                null,                      // no projection, return all columns
+                SELECTION_COLUMNS,         // select based on the title column
+                SELECTION_ARGS,            // select title = "Note0"
+                null                       // use the default sort order
         );
 
         // Asserts that the cursor is empty since the record had already been deleted.
@@ -761,10 +761,10 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
         // Tries to update the table
         int rowsUpdated = mMockResolver.update(
-            NotePad.Notes.CONTENT_URI,  // the URI of the data table
-            values,                     // a map of the updates to do (column title and value)
-            SELECTION_COLUMNS,           // select based on the title column
-            selectionArgs               // select "title = Note1"
+                NotePad.Notes.CONTENT_URI,  // the URI of the data table
+                values,                     // a map of the updates to do (column title and value)
+                SELECTION_COLUMNS,           // select based on the title column
+                selectionArgs               // select "title = Note1"
         );
 
         // Asserts that no rows were updated.
@@ -778,10 +778,10 @@ public class NotePadProviderTest extends ProviderTestCase2<NotePadProvider> {
 
         //  Does the update again, using the same arguments as in subtest 1.
         rowsUpdated = mMockResolver.update(
-            NotePad.Notes.CONTENT_URI,   // The URI of the data table
-            values,                      // the same map of updates
-            SELECTION_COLUMNS,            // same selection, based on the title column
-            selectionArgs                // same selection argument, to select "title = Note1"
+                NotePad.Notes.CONTENT_URI,   // The URI of the data table
+                values,                      // the same map of updates
+                SELECTION_COLUMNS,            // same selection, based on the title column
+                selectionArgs                // same selection argument, to select "title = Note1"
         );
 
         // Asserts that only one row was updated. The selection criteria evaluated to

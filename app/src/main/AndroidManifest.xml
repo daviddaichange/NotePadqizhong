@@ -24,7 +24,7 @@
 
     <application android:icon="@drawable/app_notes"
         android:label="@string/app_name"
-    >
+        >
         <provider android:name="NotePadProvider"
             android:authorities="com.google.provider.NotePad"
             android:exported="true">
@@ -54,7 +54,7 @@
             android:theme="@android:style/Theme.Holo.Light"
             android:screenOrientation="sensor"
             android:configChanges="keyboardHidden|orientation"
-        >
+            >
             <!-- This filter says that we can view or edit the data of
                  a single note -->
             <intent-filter android:label="@string/resolve_edit">
@@ -110,6 +110,23 @@
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_LIVE_FOLDER" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="NoteWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+
+        <activity android:name="NoteWidgetConfigureActivity"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
 
